@@ -6,4 +6,5 @@
     <string name="sign_up">Sign up</string>
     <string name="log_in">Log in</string>
     <string name="mybudget">MyBudget</string>
+    <string name="log_out">Log out</string>
 </resources>
