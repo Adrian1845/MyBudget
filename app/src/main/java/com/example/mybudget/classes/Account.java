@@ -3,24 +3,28 @@ package com.example.mybudget.classes;
 import java.util.Random;
 
 public class Account {
-    public String id;
+    public int id;
     public int balance;
 
-    public Account(int balance) {
-        this.id = generateNewAccount();
+    public String IBAN;
+
+    public Account(int id, int balance) {
+        this.id = id;
         this.balance = balance;
+        this.IBAN = generateNewAccount();
     }
 
-    public Account() {
-        this.id = generateNewAccount();
+    public Account(int id) {
+        this.id = id;
         this.balance = 0;
+        this.IBAN = generateNewAccount();
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
