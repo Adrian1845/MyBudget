@@ -42,8 +42,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        edt_email= (EditText) findViewById(R.id.edt_email);
-        edt_pass= (EditText) findViewById(R.id.edt_pass);
+        edt_email= findViewById(R.id.edt_email);
+        edt_pass= findViewById(R.id.edt_pass);
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
@@ -51,10 +51,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void login(View view) {
         //check if the email and password fields are empty and return if true
-        if(edt_email.getText().toString().isEmpty() || edt_pass.getText().toString().isEmpty()){
-            return;
-        }
-        else{
+        if( ! edt_email.getText().toString().isEmpty() || ! edt_pass.getText().toString().isEmpty()){
+
             //take data from fields
             String email = String.valueOf(edt_email.getText());
             String password = String.valueOf(edt_pass.getText());
@@ -65,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.i("login", "correct log in");
-                                Toast.makeText(MainActivity.this, "Log in successfully", Toast.LENGTH_SHORT).show();
+                                showMessage("Logged in successfully");
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 //updateUI(user);
                                 Intent intent = new Intent(MainActivity.this, MainMenu.class);
@@ -73,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.i("login", "error while log in", task.getException());
-                                Toast.makeText(MainActivity.this, "Log in has failed", Toast.LENGTH_SHORT).show();
+                                showMessage( "Log in has failed");
                                 // updateUI(null);
                             }
                         }
@@ -83,10 +81,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public void register(View view) {
         //check if the email and password fields are empty and return if true
-        if(edt_email.getText().toString().isEmpty() || edt_pass.getText().toString().isEmpty()){
-            return;
-        }
-        else{
+        if( ! edt_email.getText().toString().isEmpty() || ! edt_pass.getText().toString().isEmpty()){
             //take data from fields
             String email = String.valueOf(edt_email.getText()).trim();
             String password = String.valueOf(edt_pass.getText());
@@ -96,19 +91,22 @@ public class MainActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in user's information
                         Log.i("firebase1", "user sign up correct");
-                        Toast.makeText(MainActivity.this, "user signed up successfully", Toast.LENGTH_SHORT).show();
+                        showMessage("user signed up successfully");
                         //                            // updateUI(user);
                         Intent intent = new Intent(MainActivity.this, MainMenu.class);
                         startActivity(intent);
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.i("firebase1", "user was unable to register", task.getException());
-                        Toast.makeText(MainActivity.this, "unable to register the user", Toast.LENGTH_SHORT).show();
+                        showMessage("unable to register the user");
                         //  updateUI(null);
                     }
                 }
             });
         }
 
+    }
+    public void showMessage(String mensaje) {
+        Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show();
     }
 }

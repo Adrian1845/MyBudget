@@ -7,4 +7,7 @@
     <string name="log_in">Log in</string>
     <string name="mybudget">MyBudget</string>
     <string name="log_out">Log out</string>
+    <string name="spn_acc">Choose account</string>
+    <string name="item">item</string>
+    <string name="delete_account">Delete account</string>
 </resources>

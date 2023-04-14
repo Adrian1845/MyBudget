@@ -1,13 +1,18 @@
 package com.example.mybudget.UI;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mybudget.R;
@@ -20,10 +25,22 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 
-public class MainMenu extends AppCompatActivity {
+
+public class MainMenu extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     int n;
+
+    private ArrayList<String> IBANs = new ArrayList<>();
+    private ArrayList<Account> idAccount = new ArrayList<>();
     private TextView textview;
+
+    private Spinner spn_acc;
+    private ArrayAdapter<String> adapter;
+
+    public MainMenu() {
+    }
+
     //for linking we shall use the user ID as the main branch and then subfields as the accounts
     @Override
     public void onStart() {
@@ -39,13 +56,15 @@ public class MainMenu extends AppCompatActivity {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         }
+        init();
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
-        textview= (TextView) findViewById(R.id.textView);
-        init();
+        textview= findViewById(R.id.textView);
+        spn_acc = findViewById(R.id.spn_acc);
+
 
     }
     public void init(){
@@ -69,15 +88,41 @@ public class MainMenu extends AppCompatActivity {
                     DatabaseReference myRef = db.getReference(currentFirebaseUser.getUid());
                     Account a = new Account(n, 0);
                     //get account ID as reference and push the account to db
-                    myRef.child(String.valueOf(a.getId())).setValue(a).addOnSuccessListener(success -> Toast.makeText(getApplicationContext(), "User's data is now on db",Toast.LENGTH_LONG).show())
-                            .addOnFailureListener(failure -> Toast.makeText(getApplicationContext(), "Error while registering user's date",Toast.LENGTH_LONG).show());
+                    myRef.child(String.valueOf(a.getId())).setValue(a).addOnSuccessListener(success ->showMessage("User's data is now on db"))
+                            .addOnFailureListener(failure -> showMessage( "Error while registering user's date"));
                 }
                 else{
                     //we just use a function a declare a global variable to set the id
-                    numAccount(n -> Log.d("numAccount",String.valueOf(n))
-                            ,userRef);
+                    numAccount(new Callback() {
+                        @Override
+                        public void onCallback(int n) {
+                            Log.d("numAccount",String.valueOf(n));
+                        }
 
+                        @Override
+                        public void onSuccess(ArrayList<String> arrayList) {
+
+                        }
+                    }, userRef);
                 }
+                //retrieve IBANs for our spinner (and delete accounts)
+                getIBAN(new Callback() {
+                    @Override
+                    public void onCallback(int n) {
+                        Log.d("onCallback","Callback");
+                    }
+
+                    @Override
+                    public void onSuccess(ArrayList<String> arrayList) {
+                        //we set the spinner with the information (IBAN) we retrieved from firebase
+                        if (spn_acc != null) {
+                            spn_acc.setOnItemSelectedListener(MainMenu.this);
+                            adapter = new ArrayAdapter<>(MainMenu.this, R.layout.item_spinner, IBANs);
+                            spn_acc.setAdapter(adapter);
+                        }
+                    }
+                }, userRef);
+
             }
             //if fails (it shouldn't)
             @Override
@@ -105,6 +150,31 @@ public class MainMenu extends AppCompatActivity {
             }
         });
     }
+    private void getIBAN(@NonNull final Callback callback, DatabaseReference userRef) {
+        //retrieve the IBANs of the user
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                //check how many IBANs the user has and retrieves them
+                //for every account we collect the IBAN and we set the account into another arrayList
+                for(DataSnapshot dataSnapshot : snapshot.getChildren())
+                {
+                    //get Account class only
+                    Account acIBAN = dataSnapshot.getValue(Account.class);
+                    idAccount.add(acIBAN);
+                    assert acIBAN != null;
+                    IBANs.add(acIBAN.getIban());
+                }
+                //uses a callback for asynchronous web APIs
+                callback.onSuccess(IBANs);
+            }
+            //if fails (it shouldn't)
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.i( "init", String.valueOf(error.toException()));
+            }
+        });
+    }
 
     public void log_out(View view) {
         //log out so you can enter with another user
@@ -115,8 +185,69 @@ public class MainMenu extends AppCompatActivity {
         startActivity(intent);
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        //for evey account we check which account relates to the IBAN selected to retrieve the id
+        for (Account id : idAccount){
+            if(id.getIban().equalsIgnoreCase(adapterView.getItemAtPosition(i).toString())){
+                n=id.getId();
+            }
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+        Log.i("tipo_fruta",String.valueOf(n));
+    }
+
+    public void delAcc(View view) {
+        //we create a dialog to make sure the user wants to delete his account
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle("Delete account");
+        builder.setMessage("Are you sure you want to delete your account? (this action cannot be reverted)");
+        builder.setPositiveButton("Confirm",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //if they confirm
+                        FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                        //get db
+                        FirebaseDatabase db = FirebaseDatabase.getInstance();
+                        //get user's entry
+                        assert currentFirebaseUser != null;
+                        DatabaseReference userRef = db.getReference(currentFirebaseUser.getUid());
+                        //we delete via id as our firebase is structured on the id's
+                        userRef.child(String.valueOf(n)).removeValue();
+                        //remove from the adapter the id-1 (arrays starts at 0 index)
+                        IBANs.remove(n-1);
+                        //communicate to the adapter that something has changed
+                        adapter.notifyDataSetChanged();
+
+                        showMessage("Account deleted");
+                    }
+                });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //if they cancel
+                textview.setText("no");
+                showMessage("Do not delete the account");
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    // https://stackoverflow.com/questions/47847694/how-to-return-datasnapshot-value-as-a-result-of-a-method/47853774
     private interface Callback{
         //asynchronous handle
         void onCallback(int n);
+        void onSuccess(ArrayList<String> arrayList);
+    }
+
+    public void showMessage(String mensaje) {
+        Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show();
     }
 }

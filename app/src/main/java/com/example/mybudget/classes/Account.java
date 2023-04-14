@@ -6,18 +6,24 @@ public class Account {
     public int id;
     public int balance;
 
-    public String IBAN;
+    public String iban;
 
     public Account(int id, int balance) {
         this.id = id;
         this.balance = balance;
-        this.IBAN = generateNewAccount();
+        this.iban = generateNewAccount();
+    }
+
+    public Account() {
+        this.id = 0;
+        this.balance = 0;
+        this.iban = generateNewAccount();
     }
 
     public Account(int id) {
         this.id = id;
         this.balance = 0;
-        this.IBAN = generateNewAccount();
+        this.iban = generateNewAccount();
     }
 
     public int getId() {
@@ -36,15 +42,23 @@ public class Account {
         this.balance = balance;
     }
 
+    public String getIban() {
+        return iban;
+    }
+
+    public void setIban(String iban) {
+        this.iban = iban;
+    }
+
     private String generateNewAccount() {
         //generate new account IBAN
         Random rand = new Random();
-        String card = "ES";
+        StringBuilder card = new StringBuilder("ES");
         //generate 14 random numbers and concatenates them with prefix ES
         for (int i = 0; i < 14; i++)
         {
-            int n = rand.nextInt(10) + 0;
-            card += Integer.toString(n);
+            int n = rand.nextInt(10);
+            card.append(n);
         }
         //show account number IBAN
 //        for (int i = 0; i < 16; i++)
@@ -54,6 +68,6 @@ public class Account {
 //            }
 //            System.out.print(card.charAt(i));
 //        }
-        return card;
+        return card.toString();
     }
 }

@@ -6,4 +6,6 @@
     <string name="sign_up">Sign up</string>
     <string name="mybudget">MyBudget</string>
     <string name="log_out">Log out</string>
+    <string name="spn_acc">Choose account</string>
+    <string name="item">item</string>
 </resources>
