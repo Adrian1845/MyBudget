@@ -31,13 +31,16 @@ import java.util.ArrayList;
 public class MainMenu extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     int n;
 
-    private ArrayList<String> IBANs = new ArrayList<>();
-    private ArrayList<Account> idAccount = new ArrayList<>();
+    private ArrayList<String> IBANs;
+    private ArrayList<Account> idAccount;
     private TextView textview;
 
     private Spinner spn_acc;
     private ArrayAdapter<String> adapter;
 
+    private FirebaseDatabase db;
+    private FirebaseUser currentFirebaseUser;
+    private DatabaseReference userRef;
     public MainMenu() {
     }
 
@@ -56,39 +59,38 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemSel
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         }
+        currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        //get db
+        db = FirebaseDatabase.getInstance();
+        //get user's entry
+
+        assert currentFirebaseUser != null;
+        //get user's id as main node
+        userRef = db.getReference(currentFirebaseUser.getUid());
+        Log.i("userRef", String.valueOf(userRef));
         init();
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
-        textview= findViewById(R.id.textView);
         spn_acc = findViewById(R.id.spn_acc);
 
 
     }
     public void init(){
-        //check if user's UID (ID number) it is already on db, otherwise create new db entry
-        FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        //get db
-        FirebaseDatabase db = FirebaseDatabase.getInstance();
-        //get user's entry
 
-        assert currentFirebaseUser != null;
-        DatabaseReference userRef = db.getReference(currentFirebaseUser.getUid());
-        Log.i("userRef", String.valueOf(userRef));
         //if there's not entry, create one
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                //check if user's UID (ID number) it is already on db, otherwise create new db entry
                 //if it doesn't have children, create new account and push to db
-                if ( ! snapshot.hasChildren()){
+                if (! snapshot.hasChildren()){
                     int n=1;
-                    //et user's id as main node
-                    DatabaseReference myRef = db.getReference(currentFirebaseUser.getUid());
                     Account a = new Account(n, 0);
                     //get account ID as reference and push the account to db
-                    myRef.child(String.valueOf(a.getId())).setValue(a).addOnSuccessListener(success ->showMessage("User's data is now on db"))
+                    userRef.child(String.valueOf(a.getId())).setValue(a).addOnSuccessListener(success ->showMessage("User's data is now on db"))
                             .addOnFailureListener(failure -> showMessage( "Error while registering user's date"));
                 }
                 else{
@@ -141,7 +143,6 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemSel
                 n = (int) snapshot.getChildrenCount();
                 //uses a callback for asynchronous web APIs
                 callback.onCallback(n);
-                textview.setText(String.valueOf(n));
             }
             //if fails (it shouldn't)
             @Override
@@ -152,6 +153,8 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemSel
     }
     private void getIBAN(@NonNull final Callback callback, DatabaseReference userRef) {
         //retrieve the IBANs of the user
+        IBANs = new ArrayList<>();
+        idAccount = new ArrayList<>();
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -168,22 +171,16 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemSel
                 //uses a callback for asynchronous web APIs
                 callback.onSuccess(IBANs);
             }
-            //if fails (it shouldn't)
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+                //if fails (it shouldn't)
                 Log.i( "init", String.valueOf(error.toException()));
             }
         });
     }
 
-    public void log_out(View view) {
-        //log out so you can enter with another user
-        FirebaseAuth.getInstance().signOut();
-        Toast.makeText(MainMenu.this, "Log out successful", Toast.LENGTH_SHORT).show();
-        //start main screen
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-    }
+
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -199,7 +196,11 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemSel
     public void onNothingSelected(AdapterView<?> adapterView) {
         Log.i("tipo_fruta",String.valueOf(n));
     }
-
+    public void newAcc(View view){
+        //change screen to AddAccountActivity window
+        Intent intent = new Intent(MainMenu.this, AddAccountActivity.class);
+        startActivity(intent);
+    }
     public void delAcc(View view) {
         //we create a dialog to make sure the user wants to delete his account
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -211,12 +212,6 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemSel
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //if they confirm
-                        FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                        //get db
-                        FirebaseDatabase db = FirebaseDatabase.getInstance();
-                        //get user's entry
-                        assert currentFirebaseUser != null;
-                        DatabaseReference userRef = db.getReference(currentFirebaseUser.getUid());
                         //we delete via id as our firebase is structured on the id's
                         userRef.child(String.valueOf(n)).removeValue();
                         //remove from the adapter the id-1 (arrays starts at 0 index)
@@ -231,7 +226,6 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemSel
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //if they cancel
-                textview.setText("no");
                 showMessage("Do not delete the account");
             }
         });
@@ -240,6 +234,14 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemSel
         dialog.show();
     }
 
+    public void log_out(View view) {
+        //log out so you can enter with another user
+        FirebaseAuth.getInstance().signOut();
+        Toast.makeText(MainMenu.this, "Log out successful", Toast.LENGTH_SHORT).show();
+        //start main screen
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+    }
     // https://stackoverflow.com/questions/47847694/how-to-return-datasnapshot-value-as-a-result-of-a-method/47853774
     private interface Callback{
         //asynchronous handle
@@ -247,7 +249,7 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemSel
         void onSuccess(ArrayList<String> arrayList);
     }
 
-    public void showMessage(String mensaje) {
-        Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show();
+    public void showMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

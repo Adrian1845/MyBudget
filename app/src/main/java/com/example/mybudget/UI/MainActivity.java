@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-    public void showMessage(String mensaje) {
-        Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show();
+    public void showMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }
