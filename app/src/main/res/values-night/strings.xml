@@ -11,4 +11,8 @@
     <string name="select_your_account">Select your account</string>
     <string name="new_account">New account</string>
     <string name="generate_random_account">Generate random account</string>
+    <string name="add_account">Add Account</string>
+    <string name="iban">IBAN:</string>
+    <string name="balance">Balance:</string>
+    <string name="create_new_account">Create new account</string>
 </resources>

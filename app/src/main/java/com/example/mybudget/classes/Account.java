@@ -14,6 +14,12 @@ public class Account {
         this.iban = generateNewAccount();
     }
 
+    public Account(int id, int balance, String iban) {
+        this.id = id;
+        this.balance = balance;
+        this.iban = iban;
+    }
+
     public Account() {
         this.id = 0;
         this.balance = 0;

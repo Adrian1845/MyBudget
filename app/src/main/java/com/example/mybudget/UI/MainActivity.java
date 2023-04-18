@@ -77,6 +77,14 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
         }
+        else{
+            if(edt_email.getText().toString().isEmpty()){
+                edt_email.setError("Incorrect email");
+            }
+            if(edt_pass.getText().toString().isEmpty()){
+                edt_pass.setError("Incorrect password");
+            }
+        }
 
     }
     public void register(View view) {
@@ -92,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
                         // Sign in success, update UI with the signed-in user's information
                         Log.i("firebase1", "user sign up correct");
                         showMessage("user signed up successfully");
-                        //                            // updateUI(user);
+                        //updateUI(user);
                         Intent intent = new Intent(MainActivity.this, MainMenu.class);
                         startActivity(intent);
                     } else {
@@ -103,6 +111,14 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
+        }
+        else{
+            if(edt_email.getText().toString().isEmpty()){
+                edt_email.setError("Incorrect email");
+            }
+            if(edt_pass.getText().toString().isEmpty()){
+                edt_pass.setError("Incorrect password");
+            }
         }
 
     }
