@@ -1,5 +1,6 @@
 package com.example.mybudget.classes;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Account {
@@ -8,28 +9,34 @@ public class Account {
 
     public String iban;
 
+    public ArrayList<Movement> movements;
+
     public Account(int id, int balance) {
         this.id = id;
         this.balance = balance;
         this.iban = generateNewAccount();
+        this.movements = new ArrayList<>();
     }
 
     public Account(int id, int balance, String iban) {
         this.id = id;
         this.balance = balance;
         this.iban = iban;
+        this.movements = new ArrayList<>();
     }
 
     public Account() {
         this.id = 0;
         this.balance = 0;
         this.iban = generateNewAccount();
+        this.movements = new ArrayList<>();
     }
 
     public Account(int id) {
         this.id = id;
         this.balance = 0;
         this.iban = generateNewAccount();
+        this.movements = new ArrayList<>();
     }
 
     public int getId() {
@@ -54,6 +61,14 @@ public class Account {
 
     public void setIban(String iban) {
         this.iban = iban;
+    }
+
+    public ArrayList<Movement> getMovements() {
+        return movements;
+    }
+
+    public void setMovements(ArrayList<Movement> movements) {
+        this.movements = movements;
     }
 
     private String generateNewAccount() {
