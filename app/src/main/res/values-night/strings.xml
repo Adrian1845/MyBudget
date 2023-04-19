@@ -15,4 +15,5 @@
     <string name="iban">IBAN:</string>
     <string name="balance">Balance:</string>
     <string name="create_new_account">Create new account</string>
+    <string name="view_account">View account</string>
 </resources>

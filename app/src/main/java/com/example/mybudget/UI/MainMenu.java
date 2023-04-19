@@ -29,6 +29,8 @@ import java.util.ArrayList;
 
 
 public class MainMenu extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+
+    public static final String EXTRA_ID = "com.example.mybudget.id";
     int n;
 
     private ArrayList<String> IBANs;
@@ -195,6 +197,14 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemSel
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
         Log.i("tipo_fruta",String.valueOf(n));
+    }
+    public void viewAcc(View view){
+        //change screen to ViewAccountActivity window
+        Log.i("viewAcc",String.valueOf(n));
+        int id = n;
+        Intent intent = new Intent(MainMenu.this, ViewAccountActivity.class);
+        intent.putExtra(EXTRA_ID,id);
+        startActivity(intent);
     }
     public void newAcc(View view){
         //change screen to AddAccountActivity window

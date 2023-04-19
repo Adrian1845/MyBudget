@@ -34,18 +34,27 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/btn_out"
+        android:id="@+id/btn_new"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="156dp"
-        android:layout_marginTop="656dp"
-        android:layout_marginEnd="161dp"
-        android:onClick="log_out"
-        android:text="@string/log_out"
+        android:layout_marginTop="220dp"
+        android:onClick="newAcc"
+        android:text="@string/new_account"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/spn_acc" />
+
+    <Button
+        android:id="@+id/btn_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="120dp"
+        android:onClick="viewAcc"
+        android:text="@string/view_account"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spn_acc" />
 
     <Button
         android:id="@+id/btn_del"
@@ -60,15 +69,17 @@
         app:layout_constraintTop_toBottomOf="@+id/spn_acc" />
 
     <Button
-        android:id="@+id/btn_new"
+        android:id="@+id/btn_out"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="220dp"
-        android:onClick="newAcc"
-        android:text="@string/new_account"
+        android:layout_marginStart="156dp"
+        android:layout_marginTop="656dp"
+        android:layout_marginEnd="161dp"
+        android:onClick="log_out"
+        android:text="@string/log_out"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spn_acc" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
