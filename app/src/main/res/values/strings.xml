@@ -20,4 +20,7 @@
     <string name="_0">0</string>
     <string name="create_new_account">Create new account</string>
     <string name="view_account">View account</string>
+    <string name="your_balance">Your balance</string>
+    <string name="new_movement">New movement</string>
+    <string name="view_movements">View movements</string>
 </resources>

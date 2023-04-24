@@ -16,4 +16,6 @@
     <string name="balance">Balance:</string>
     <string name="create_new_account">Create new account</string>
     <string name="view_account">View account</string>
+    <string name="new_movement">New movement</string>
+    <string name="view_movements">View movements</string>
 </resources>

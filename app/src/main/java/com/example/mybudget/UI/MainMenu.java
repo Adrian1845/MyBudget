@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mybudget.R;
 import com.example.mybudget.classes.Account;
+import com.example.mybudget.classes.Movement;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -90,7 +91,10 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemSel
                 //if it doesn't have children, create new account and push to db
                 if (! snapshot.hasChildren()){
                     int n=1;
-                    Account a = new Account(n, 0);
+                    ArrayList<Movement> m=new ArrayList<>();
+                    m.add(new Movement(1,10,"18/08/2002","agua"));
+                    Account a = new Account(n, 0,"ES");
+                    a.setMovements(m);
                     //get account ID as reference and push the account to db
                     userRef.child(String.valueOf(a.getId())).setValue(a).addOnSuccessListener(success ->showMessage("User's data is now on db"))
                             .addOnFailureListener(failure -> showMessage( "Error while registering user's date"));

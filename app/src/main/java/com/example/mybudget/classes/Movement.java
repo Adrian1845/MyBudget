@@ -13,6 +13,14 @@ public class Movement {
         this.type = type;
     }
 
+
+    public Movement() {
+        this.id = 0;
+        this.qty = 1;
+        this.date = "1";
+        this.type = "comida";
+    }
+
     public int getId() {
         return id;
     }
