@@ -18,4 +18,11 @@
     <string name="view_account">View account</string>
     <string name="new_movement">New movement</string>
     <string name="view_movements">View movements</string>
+    <string name="quantity">Quantity</string>
+    <string name="qty">-300</string>
+    <string name="by_default_will_be_today_s">By default will be today\'s</string>
+    <string name="date">Date</string>
+    <string name="type">Type</string>
+    <string name="rent">Rent</string>
+    <string name="submit">Submit</string>
 </resources>

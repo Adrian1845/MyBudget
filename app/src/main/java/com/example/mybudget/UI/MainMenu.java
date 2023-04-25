@@ -1,6 +1,6 @@
 package com.example.mybudget.UI;
 
-import android.content.DialogInterface;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
+
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -36,7 +36,6 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemSel
 
     private ArrayList<String> IBANs;
     private ArrayList<Account> idAccount;
-    private TextView textview;
 
     private Spinner spn_acc;
     private ArrayAdapter<String> adapter;
@@ -200,7 +199,7 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemSel
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
-        Log.i("tipo_fruta",String.valueOf(n));
+        Log.i("spinner",String.valueOf(n));
     }
     public void viewAcc(View view){
         //change screen to ViewAccountActivity window
@@ -222,26 +221,20 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemSel
         builder.setTitle("Delete account");
         builder.setMessage("Are you sure you want to delete your account? (this action cannot be reverted)");
         builder.setPositiveButton("Confirm",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //if they confirm
-                        //we delete via id as our firebase is structured on the id's
-                        userRef.child(String.valueOf(n)).removeValue();
-                        //remove from the adapter the id-1 (arrays starts at 0 index)
-                        IBANs.remove(n-1);
-                        //communicate to the adapter that something has changed
-                        adapter.notifyDataSetChanged();
+                (dialog, which) -> {
+                    //if they confirm
+                    //we delete via id as our firebase is structured on the id's
+                    userRef.child(String.valueOf(n)).removeValue();
+                    //remove from the adapter the id-1 (arrays starts at 0 index)
+                    IBANs.remove(n-1);
+                    //communicate to the adapter that something has changed
+                    adapter.notifyDataSetChanged();
 
-                        showMessage("Account deleted");
-                    }
+                    showMessage("Account deleted");
                 });
-        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                //if they cancel
-                showMessage("Do not delete the account");
-            }
+        builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> {
+            //if they cancel
+            showMessage("Do not delete the account");
         });
 
         AlertDialog dialog = builder.create();

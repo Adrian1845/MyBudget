@@ -16,8 +16,6 @@ public class Account {
         this.balance = balance;
         this.iban = generateNewAccount();
         this.movements = new ArrayList<>();
-        this.movements.add(new Movement(1,10,"18/08/2002","comida"));
-        this.movements.add(new Movement(1,10,"18/08/2002","agua"));
     }
 
     public Account(int id, int balance, String iban) {
@@ -25,8 +23,6 @@ public class Account {
         this.balance = balance;
         this.iban = iban;
         this.movements = new ArrayList<>();
-        this.movements.add(new Movement(1,10,"18/08/2002","comida"));
-        this.movements.add(new Movement(1,10,"18/08/2002","agua"));
     }
 
     public Account() {
@@ -34,8 +30,6 @@ public class Account {
         this.balance = 0;
         this.iban = generateNewAccount();
         this.movements = new ArrayList<>();
-        this.movements.add(new Movement(1,10,"18/08/2002","comida"));
-        this.movements.add(new Movement(1,10,"18/08/2002","agua"));
     }
 
     public Account(int id) {
@@ -43,8 +37,6 @@ public class Account {
         this.balance = 0;
         this.iban = generateNewAccount();
         this.movements = new ArrayList<>();
-        this.movements.add(new Movement(1,10,"18/08/2002","comida"));
-        this.movements.add(new Movement(1,10,"18/08/2002","agua"));
     }
 
     public int getId() {

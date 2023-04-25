@@ -29,11 +29,13 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class ViewAccountActivity extends AppCompatActivity {
+    public static final String EXTRA_ID_ACCOUNT = "com.example.mybudget.id_account";
+    public static final String EXTRA_BALANCE = "com.example.mybudget.balance";
     private int id;
     private FirebaseDatabase db;
     private FirebaseUser currentFirebaseUser;
     private DatabaseReference userRef;
-    private PieChart pieChart;
+    public static PieChart pieChart;
     private TextView txt_vBalance;
 
     private final int[] MY_COLORS = {Color.parseColor("#9750EF"),
@@ -56,14 +58,7 @@ public class ViewAccountActivity extends AppCompatActivity {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         }
-
-
         Log.i("userRef", String.valueOf(userRef));
-    }
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_account);
         Intent intent = getIntent();
 
         if(intent != null){
@@ -76,50 +71,63 @@ public class ViewAccountActivity extends AppCompatActivity {
         //get user's entry
         assert currentFirebaseUser != null;
         userRef = db.getReference(currentFirebaseUser.getUid()).child(String.valueOf(id));
-        pieChart = findViewById(R.id.pieChart);
-        txt_vBalance = findViewById(R.id.txt_vBalance);
-        //get balance
-        getBalance(new Callback(){
-
-            @Override
-            public void onPiechart(ArrayList<PieEntry> pieArray) {
-                return;
-            }
-
-            @Override
-            public void onBalance(long balance) {
-                txt_vBalance.setText(String.valueOf(balance));
-            }
-        });
-        createChart(new Callback(){
-
-            @Override
-            public void onPiechart(ArrayList<PieEntry> pieArray) {
-                //reload chart to assign data
-                //set the array
-                PieDataSet pieDataSet = new PieDataSet(pieArray,"SPENDINGS");
-                pieDataSet.setColors(MY_COLORS);
-                pieDataSet.setValueTextColor(R.color.black);
-                pieDataSet.setValueTextSize(32f);
-
-                PieData pieData = new PieData(pieDataSet);
-                pieChart.setData(pieData);
-                pieChart.animate();
-                pieChart.setEntryLabelColor(R.color.black);
-                pieChart.getDescription().setEnabled(false);
-
-                //reload chart
-                pieChart.notifyDataSetChanged();
-                pieChart.invalidate();
-            }
-
-            @Override
-            public void onBalance(long balance) {
-                return;
-            }
-        });
+        //init_acc method to start screen with data
+        init_acc();
     }
 
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_view_account);
+
+        pieChart = findViewById(R.id.pieChart);
+        txt_vBalance = findViewById(R.id.txt_vBalance);
+    }
+
+        private void init_acc() {
+        //start screen with all necessary data
+            //get balance
+            getBalance(new Callback(){
+
+                @Override
+                public void onPiechart(ArrayList<PieEntry> pieArray) {
+                }
+
+                @Override
+                public void onBalance(long balance) {
+                    //set balance
+                    txt_vBalance.setText(String.valueOf(balance));
+                }
+            });
+            createChart(new Callback(){
+
+                @Override
+                public void onPiechart(ArrayList<PieEntry> pieArray) {
+                    //reload chart to assign data
+                    //set the array
+                    PieDataSet pieDataSet = new PieDataSet(pieArray,"");
+                    pieDataSet.setColors(MY_COLORS);
+                    pieDataSet.setValueTextColor(R.color.black);
+                    pieDataSet.setValueTextSize(32f);
+
+                    PieData pieData = new PieData(pieDataSet);
+                    pieChart.setData(pieData);
+                    pieChart.animate();
+                    pieChart.setEntryLabelColor(R.color.black);
+                    pieChart.getDescription().setEnabled(false);
+
+                    //reload chart
+                    pieChart.notifyDataSetChanged();
+                    pieChart.invalidate();
+                }
+
+                @Override
+                public void onBalance(long balance) {
+                }
+            });
+        }
     private void getBalance(Callback callback) {
         //retrieve balance data
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -148,41 +156,36 @@ public class ViewAccountActivity extends AppCompatActivity {
                     arrayMov.add(snapshotMov.getValue(Movement.class));
                 }
                 //create new charMov object to assign to the chart
-                if(arrayMov != null){
-                    Log.d("arrayMov","size: "+arrayMov.size());
+                if(arrayMov.size()!=0){
                     ArrayList<ChartMov> arrayChartMov = new ArrayList<>();
                     int qty;
                     String type;
                     boolean check;
-                    int i=0;
                     //for every mov retrieve quantity and type
                     for (Movement mov : arrayMov) {
-                        Log.d("i",String.valueOf(i));
                         qty = mov.getQty();
                         type = mov.getType();
                         check=false;
-                        //check if type is already in the chart
-                        for (ChartMov cm : arrayChartMov) {
-                            if (cm.getType().equalsIgnoreCase(type)) {
-                                cm.setQty(cm.getQty() + qty);
-                                check=true;
-                                break;
+                        if(qty<0){
+                            //check if type is already in the chart
+                            for (ChartMov cm : arrayChartMov) {
+                                if (cm.getType().equalsIgnoreCase(type)) {
+                                    cm.setQty(cm.getQty() + qty);
+                                    check=true;
+                                    break;
+                                }
                             }
-                        }
-                        //if it's not
-                        if(!check) {
-                            ChartMov c = new ChartMov(type,qty);
-                            Log.d("arrayMov","arrayCharMov añadimos un valor");
-                            arrayChartMov.add(c);
+                            //if it's not
+                            if(!check) {
+                                ChartMov c = new ChartMov(type,qty *= -1);
+                                arrayChartMov.add(c);
+                            }
                         }
                     }
                     //add the chartMov to the chart
                     for (ChartMov cm: arrayChartMov) {
                         pieArray.add(new PieEntry(cm.getQty(),cm.getType()));
                     }
-                }
-                else{
-                    pieArray.add(new PieEntry(0,""));
                 }
                 //call callback
                 Log.d("PieArray", "size:" +pieArray.size());
@@ -197,11 +200,17 @@ public class ViewAccountActivity extends AppCompatActivity {
         });
     }
     public void newMov(View view) {
+        //change screen to NewMovementActivity
         Intent intent = new Intent(this, NewMovementActivity.class);
+        intent.putExtra(EXTRA_ID_ACCOUNT,id);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        intent.putExtra(EXTRA_BALANCE,Integer.valueOf(txt_vBalance.getText().toString()));
         startActivity(intent);
     }
     public void viewMov(View view) {
+        //change screen to ViewMovementActivity
         Intent intent = new Intent(this, ViewMovementActivity.class);
+        intent.putExtra(EXTRA_ID_ACCOUNT,id);
         startActivity(intent);
     }
 

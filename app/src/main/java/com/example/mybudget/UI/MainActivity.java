@@ -51,77 +51,72 @@ public class MainActivity extends AppCompatActivity {
 
     public void login(View view) {
         //check if the email and password fields are empty and return if true
-        if( ! edt_email.getText().toString().isEmpty() || ! edt_pass.getText().toString().isEmpty()){
+        if(edt_email.getText().toString().isEmpty()){
+            edt_email.setError("Incorrect email");
+            return;
+        }
+        if(edt_pass.getText().toString().isEmpty()){
+            edt_pass.setError("Incorrect password");
+            return;
+        }
 
-            //take data from fields
-            String email = String.valueOf(edt_email.getText());
-            String password = String.valueOf(edt_pass.getText());
-            mAuth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
-                                Log.i("login", "correct log in");
-                                showMessage("Logged in successfully");
-                                FirebaseUser user = mAuth.getCurrentUser();
-                                //updateUI(user);
-                                Intent intent = new Intent(MainActivity.this, MainMenu.class);
-                                startActivity(intent);
-                            } else {
-                                // If sign in fails, display a message to the user.
-                                Log.i("login", "error while log in", task.getException());
-                                showMessage( "Log in has failed");
-                                // updateUI(null);
-                            }
+        //take data from fields
+        String email = String.valueOf(edt_email.getText());
+        String password = String.valueOf(edt_pass.getText());
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.i("login", "correct log in");
+                            showMessage("Logged in successfully");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            //updateUI(user);
+                            Intent intent = new Intent(MainActivity.this, MainMenu.class);
+                            startActivity(intent);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.i("login", "error while log in", task.getException());
+                            showMessage( "Log in has failed");
+                            // updateUI(null);
                         }
-                    });
-        }
-        else{
-            if(edt_email.getText().toString().isEmpty()){
-                edt_email.setError("Incorrect email");
-            }
-            if(edt_pass.getText().toString().isEmpty()){
-                edt_pass.setError("Incorrect password");
-            }
-        }
-
+                    }
+                });
     }
     public void register(View view) {
         //check if the email and password fields are empty and return if true
-        if( ! edt_email.getText().toString().isEmpty() || ! edt_pass.getText().toString().isEmpty()){
-            //take data from fields
-            String email = String.valueOf(edt_email.getText()).trim();
-            String password = String.valueOf(edt_pass.getText());
-            mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()) {
-                        // Sign in success, update UI with the signed-in user's information
-                        Log.i("firebase1", "user sign up correct");
-                        showMessage("user signed up successfully");
-                        //updateUI(user);
-                        Intent intent = new Intent(MainActivity.this, MainMenu.class);
-                        startActivity(intent);
-                    } else {
-                        // If sign in fails, display a message to the user.
-                        Log.i("firebase1", "user was unable to register", task.getException());
-                        showMessage("unable to register the user");
-                        //  updateUI(null);
-                    }
+        if(edt_email.getText().toString().isEmpty()){
+            edt_email.setError("Incorrect email");
+            return;
+        }
+        if(edt_pass.getText().toString().isEmpty()){
+            edt_pass.setError("Incorrect password");
+            return;
+        }
+        //take data from fields
+        String email = String.valueOf(edt_email.getText()).trim();
+        String password = String.valueOf(edt_pass.getText());
+        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.i("firebase1", "user sign up correct");
+                    showMessage("user signed up successfully");
+                    //updateUI(user);
+                    Intent intent = new Intent(MainActivity.this, MainMenu.class);
+                    startActivity(intent);
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Log.i("firebase1", "user was unable to register", task.getException());
+                    showMessage("unable to register the user");
+                    //  updateUI(null);
                 }
-            });
-        }
-        else{
-            if(edt_email.getText().toString().isEmpty()){
-                edt_email.setError("Incorrect email");
             }
-            if(edt_pass.getText().toString().isEmpty()){
-                edt_pass.setError("Incorrect password");
-            }
-        }
-
+        });
     }
+
     public void showMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
