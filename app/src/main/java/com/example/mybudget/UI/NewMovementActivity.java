@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -14,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mybudget.DatePicker.DatePickerFragment;
 import com.example.mybudget.R;
-import com.example.mybudget.classes.Movement;
+import com.example.mybudget.Classes.Movement;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -35,6 +36,9 @@ public class NewMovementActivity extends AppCompatActivity {
     private EditText edt_date;
     private EditText edt_qty;
     private EditText edt_type;
+    private RadioButton rb_add;
+    private RadioButton rb_withdraw;
+    private Boolean value;
     private Button btn_submitMov;
 
     @Override
@@ -74,12 +78,32 @@ public class NewMovementActivity extends AppCompatActivity {
         edt_qty = findViewById(R.id.edt_qty);
         edt_type = findViewById(R.id.edt_type);
         edt_date = findViewById(R.id.edt_date);
+        rb_add = findViewById(R.id.rb_add);
+        rb_withdraw = findViewById(R.id.rb_withdraw);
         btn_submitMov = findViewById(R.id.btn_submitMov);
         //set OnClickListeners
         edt_date.setOnClickListener(this::onClick);
         btn_submitMov.setOnClickListener(this::onClick);
+        //set radio listeners
+        rb_add.setOnClickListener(this::onRadioButtonClicked);
+        rb_withdraw.setOnClickListener(this::onRadioButtonClicked);
     }
 
+    public void onRadioButtonClicked(View view) {
+        // Is the button now checked?
+        boolean checked = ((RadioButton) view).isChecked();
+        // Check which radio button was clicked
+        switch(view.getId()) {
+            case R.id.rb_add:
+                if (checked)
+                    value=true;
+                    break;
+            case R.id.rb_withdraw:
+                if (checked)
+                    value=false;
+                    break;
+        }
+    }
 
     @SuppressLint("NonConstantResourceId")
     public void onClick(View view) {
@@ -118,6 +142,11 @@ public class NewMovementActivity extends AppCompatActivity {
             edt_type.setError("Incorrect type");
             return;
         }
+        if(value == null){
+            rb_add.setError("Select income or withdraw");
+            rb_withdraw.setError("Select income or withdraw");
+            return;
+        }
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -145,12 +174,16 @@ public class NewMovementActivity extends AppCompatActivity {
                 else{
                     date = edt_date.getText().toString();
                 }
+                int qty=Integer.parseInt(edt_qty.getText().toString());;
+                if(!value){
+                    qty= qty *= -1;
+                }
                 //create new movement and push to db
-                Movement m = new Movement(n, Integer.parseInt(edt_qty.getText().toString()), date, edt_type.getText().toString());
+                Movement m = new Movement(n, qty, date, edt_type.getText().toString());
                 userRef.child("movements").child(String.valueOf(n)).setValue(m).addOnSuccessListener(success -> showMessage("New movement created"))
                         .addOnFailureListener(failure -> showMessage("Error while submitting new movement"));
                 //update balance field
-                userRef.child("balance").setValue(balance+Integer.parseInt(edt_qty.getText().toString()));
+                userRef.child("balance").setValue(balance+qty);
                 showMessage("Balance updated");
 
                 edt_date.setText("");

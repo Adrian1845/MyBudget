@@ -12,8 +12,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mybudget.R;
-import com.example.mybudget.classes.ChartMov;
-import com.example.mybudget.classes.Movement;
+import com.example.mybudget.Classes.ChartMov;
+import com.example.mybudget.Classes.Movement;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
@@ -27,6 +27,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class ViewAccountActivity extends AppCompatActivity {
     public static final String EXTRA_ID_ACCOUNT = "com.example.mybudget.id_account";
@@ -38,12 +39,12 @@ public class ViewAccountActivity extends AppCompatActivity {
     public static PieChart pieChart;
     private TextView txt_vBalance;
 
-    private final int[] MY_COLORS = {Color.parseColor("#9750EF"),
+    private ArrayList<Integer> MY_COLORS = new ArrayList<>(); /*{Color.parseColor("#9750EF"),
             Color.parseColor("#8CF479"),
             Color.parseColor("#EF9050"),
             Color.parseColor("#3DBDEF"),
             Color.parseColor("#F13E67"),
-            Color.parseColor("#50EF85")};
+            Color.parseColor("#50EF85")};*/
     @Override
     public void onStart() {
         super.onStart();
@@ -107,6 +108,7 @@ public class ViewAccountActivity extends AppCompatActivity {
                 public void onPiechart(ArrayList<PieEntry> pieArray) {
                     //reload chart to assign data
                     //set the array
+                    randomColors(pieArray.size());
                     PieDataSet pieDataSet = new PieDataSet(pieArray,"");
                     pieDataSet.setColors(MY_COLORS);
                     pieDataSet.setValueTextColor(R.color.black);
@@ -128,6 +130,19 @@ public class ViewAccountActivity extends AppCompatActivity {
                 }
             });
         }
+
+    private void randomColors(int size) {
+        // create object of Random class
+        for(int i=0; i<size;i++){
+            Random obj = new Random();
+            int rand_num = obj.nextInt(0xffffff + 1);
+            // format it as hexadecimal string and print
+            String colorCode = String.format("#%06x", rand_num);
+            MY_COLORS.add(Color.parseColor(colorCode));
+        }
+
+    }
+
     private void getBalance(Callback callback) {
         //retrieve balance data
         userRef.addListenerForSingleValueEvent(new ValueEventListener() {

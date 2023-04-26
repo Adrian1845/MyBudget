@@ -110,11 +110,36 @@
         android:id="@+id/btn_submitMov"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="560dp"
+        android:layout_marginTop="624dp"
         android:text="@string/submit"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.471"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <RadioGroup
+        android:id="@+id/rg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="452dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RadioButton
+            android:id="@+id/rb_add"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/income" />
+
+        <RadioButton
+            android:id="@+id/rb_withdraw"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/withdraw"
+            tools:layout_editor_absoluteX="151dp"
+            tools:layout_editor_absoluteY="453dp" />
+
+    </RadioGroup>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

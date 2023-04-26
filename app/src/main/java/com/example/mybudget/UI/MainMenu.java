@@ -16,8 +16,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mybudget.R;
-import com.example.mybudget.classes.Account;
-import com.example.mybudget.classes.Movement;
+import com.example.mybudget.Classes.Account;
+import com.example.mybudget.Classes.Movement;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;

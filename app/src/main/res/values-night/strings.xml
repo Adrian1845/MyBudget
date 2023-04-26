@@ -1,28 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">MyBudget</string>
     <string name="logo">MyBudget logo</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="sign_up">Sign up</string>
+    <string name="log_in">Log in</string>
     <string name="mybudget">MyBudget</string>
     <string name="log_out">Log out</string>
     <string name="spn_acc">Choose account</string>
     <string name="item">item</string>
+    <string name="delete_account">Delete account</string>
     <string name="select_your_account">Select your account</string>
     <string name="new_account">New account</string>
     <string name="generate_random_account">Generate random account</string>
     <string name="add_account">Add Account</string>
     <string name="iban">IBAN:</string>
+    <string name="IBAN_EX">Ex: ESXXXXXXXXXXXXXX</string>
     <string name="balance">Balance:</string>
+    <string name="_0">0</string>
     <string name="create_new_account">Create new account</string>
     <string name="view_account">View account</string>
+    <string name="your_balance">Your balance</string>
     <string name="new_movement">New movement</string>
     <string name="view_movements">View movements</string>
     <string name="quantity">Quantity</string>
-    <string name="qty">-300</string>
+    <string name="qty">300</string>
     <string name="by_default_will_be_today_s">By default will be today\'s</string>
     <string name="date">Date</string>
     <string name="type">Type</string>
     <string name="rent">Rent</string>
     <string name="submit">Submit</string>
+    <string name="apply_filters">Apply filters</string>
+    <string name="filter">Filter</string>
+    <string name="income">Income</string>
+    <string name="withdraw">Withdraw</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.example.mybudget.classes;
+package com.example.mybudget.Classes;
 
 public class ChartMov {
     public String type;

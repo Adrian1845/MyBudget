@@ -1,4 +1,4 @@
-package com.example.mybudget.classes;
+package com.example.mybudget.Classes;
 
 import java.util.ArrayList;
 import java.util.Random;
