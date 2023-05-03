@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
-    android:background="@color/light_red"
+    android:background="@color/background"
     android:padding="16dp"
     android:baselineAligned="false">
 
@@ -16,31 +16,37 @@
         tools:ignore="UselessParent">
 
         <TextView
-            android:id="@+id/txt_quantity"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:text="@string/quantity"
-            android:textColor="#3E2723"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/txt_mType"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:text="@string/type"
-            android:textColor="#3E2723"
-            android:textSize="16sp" />
-
-        <TextView
             android:id="@+id/txt_mDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:text="@string/date"
-            android:textColor="#3E2723"
+            android:textColor="@color/primary"
             android:textSize="16sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txt_mType"
+                android:layout_width="173dp"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="@string/type"
+                android:textColor="@color/secondary"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/txt_quantity"
+                android:layout_width="173dp"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="@string/quantity"
+                android:textColor="@color/secondary"
+                android:textSize="16sp" />
+        </LinearLayout>
 
     </LinearLayout>
 

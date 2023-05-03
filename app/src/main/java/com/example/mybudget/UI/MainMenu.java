@@ -40,8 +40,6 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemSel
     private Spinner spn_acc;
     private ArrayAdapter<String> adapter;
 
-    private FirebaseDatabase db;
-    private FirebaseUser currentFirebaseUser;
     private DatabaseReference userRef;
     public MainMenu() {
     }
@@ -61,9 +59,9 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemSel
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         }
-        currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         //get db
-        db = FirebaseDatabase.getInstance();
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
         //get user's entry
 
         assert currentFirebaseUser != null;
@@ -92,7 +90,7 @@ public class MainMenu extends AppCompatActivity implements AdapterView.OnItemSel
                     int n=1;
                     ArrayList<Movement> m=new ArrayList<>();
                     m.add(new Movement(1,10,"18/08/2002","agua"));
-                    Account a = new Account(n, 0,"ES");
+                    Account a = new Account(n, 0);
                     a.setMovements(m);
                     //get account ID as reference and push the account to db
                     userRef.child(String.valueOf(a.getId())).setValue(a).addOnSuccessListener(success ->showMessage("User's data is now on db"))

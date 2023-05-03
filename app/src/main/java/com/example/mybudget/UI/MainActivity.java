@@ -1,8 +1,5 @@
 package com.example.mybudget.UI;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,17 +7,14 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.mybudget.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
 
-    FirebaseDatabase database;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
 
@@ -64,23 +58,19 @@ public class MainActivity extends AppCompatActivity {
         String email = String.valueOf(edt_email.getText());
         String password = String.valueOf(edt_pass.getText());
         mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.i("login", "correct log in");
-                            showMessage("Logged in successfully");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            //updateUI(user);
-                            Intent intent = new Intent(MainActivity.this, MainMenu.class);
-                            startActivity(intent);
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.i("login", "error while log in", task.getException());
-                            showMessage( "Log in has failed");
-                            // updateUI(null);
-                        }
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.i("login", "correct log in");
+                        showMessage("Logged in successfully");
+                        //updateUI(user);
+                        Intent intent = new Intent(MainActivity.this, MainMenu.class);
+                        startActivity(intent);
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Log.i("login", "error while log in", task.getException());
+                        showMessage( "Log in has failed");
+                        // updateUI(null);
                     }
                 });
     }
@@ -97,22 +87,19 @@ public class MainActivity extends AppCompatActivity {
         //take data from fields
         String email = String.valueOf(edt_email.getText()).trim();
         String password = String.valueOf(edt_pass.getText());
-        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.i("firebase1", "user sign up correct");
-                    showMessage("user signed up successfully");
-                    //updateUI(user);
-                    Intent intent = new Intent(MainActivity.this, MainMenu.class);
-                    startActivity(intent);
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Log.i("firebase1", "user was unable to register", task.getException());
-                    showMessage("unable to register the user");
-                    //  updateUI(null);
-                }
+        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, task -> {
+            if (task.isSuccessful()) {
+                // Sign in success, update UI with the signed-in user's information
+                Log.i("firebase1", "user sign up correct");
+                showMessage("user signed up successfully");
+                //updateUI(user);
+                Intent intent = new Intent(MainActivity.this, MainMenu.class);
+                startActivity(intent);
+            } else {
+                // If sign in fails, display a message to the user.
+                Log.i("firebase1", "user was unable to register", task.getException());
+                showMessage("unable to register the user");
+                //  updateUI(null);
             }
         });
     }

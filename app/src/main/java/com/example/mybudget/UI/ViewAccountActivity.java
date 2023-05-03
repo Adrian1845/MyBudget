@@ -1,8 +1,6 @@
 package com.example.mybudget.UI;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -11,9 +9,12 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.mybudget.R;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.mybudget.Classes.ChartMov;
 import com.example.mybudget.Classes.Movement;
+import com.example.mybudget.R;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
@@ -26,25 +27,21 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.Date;
 
 public class ViewAccountActivity extends AppCompatActivity {
     public static final String EXTRA_ID_ACCOUNT = "com.example.mybudget.id_account";
     public static final String EXTRA_BALANCE = "com.example.mybudget.balance";
     private int id;
-    private FirebaseDatabase db;
-    private FirebaseUser currentFirebaseUser;
     private DatabaseReference userRef;
     public static PieChart pieChart;
     private TextView txt_vBalance;
 
-    private ArrayList<Integer> MY_COLORS = new ArrayList<>(); /*{Color.parseColor("#9750EF"),
-            Color.parseColor("#8CF479"),
-            Color.parseColor("#EF9050"),
-            Color.parseColor("#3DBDEF"),
-            Color.parseColor("#F13E67"),
-            Color.parseColor("#50EF85")};*/
+    private ArrayList<Integer> MY_COLORS = new ArrayList<>();
     @Override
     public void onStart() {
         super.onStart();
@@ -66,9 +63,9 @@ public class ViewAccountActivity extends AppCompatActivity {
             id = (Integer) intent.getSerializableExtra(MainMenu.EXTRA_ID);
         }
         //get user's id as main node
-        currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         //get db
-        db = FirebaseDatabase.getInstance();
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
         //get user's entry
         assert currentFirebaseUser != null;
         userRef = db.getReference(currentFirebaseUser.getUid()).child(String.valueOf(id));
@@ -108,18 +105,18 @@ public class ViewAccountActivity extends AppCompatActivity {
                 public void onPiechart(ArrayList<PieEntry> pieArray) {
                     //reload chart to assign data
                     //set the array
-                    randomColors(pieArray.size());
+                    genColors(pieArray.size());
                     PieDataSet pieDataSet = new PieDataSet(pieArray,"");
                     pieDataSet.setColors(MY_COLORS);
-                    pieDataSet.setValueTextColor(R.color.black);
+                    pieDataSet.setValueTextColor(R.color.on_secondary);
                     pieDataSet.setValueTextSize(32f);
 
                     PieData pieData = new PieData(pieDataSet);
                     pieChart.setData(pieData);
                     pieChart.animate();
-                    pieChart.setEntryLabelColor(R.color.black);
+                    pieChart.setEntryLabelColor(R.color.on_secondary);
                     pieChart.getDescription().setEnabled(false);
-
+                    pieChart.setCenterText("Last 30 days movements");
                     //reload chart
                     pieChart.notifyDataSetChanged();
                     pieChart.invalidate();
@@ -131,14 +128,30 @@ public class ViewAccountActivity extends AppCompatActivity {
             });
         }
 
-    private void randomColors(int size) {
-        // create object of Random class
-        for(int i=0; i<size;i++){
-            Random obj = new Random();
-            int rand_num = obj.nextInt(0xffffff + 1);
-            // format it as hexadecimal string and print
-            String colorCode = String.format("#%06x", rand_num);
-            MY_COLORS.add(Color.parseColor(colorCode));
+    private void genColors(int size) {
+        //add colors
+        int c=0;
+        for(int i=0; i < size ;i++){
+            switch (c){
+                case 0:
+                    MY_COLORS.add(Color.parseColor("#9750EF"));
+                    c++;
+                case 1:
+                    MY_COLORS.add(Color.parseColor("#8CF479"));
+                    c++;
+                case 2:
+                    MY_COLORS.add(Color.parseColor("#EF9050"));
+                    c++;
+                case 3:
+                    MY_COLORS.add(Color.parseColor("#3DBDEF"));
+                    c++;
+                case 4:
+                    MY_COLORS.add(Color.parseColor("#F13E67"));
+                    c++;
+                case 5:
+                    MY_COLORS.add(Color.parseColor("#50EF85"));
+                    c=0;
+            }
         }
 
     }
@@ -175,26 +188,32 @@ public class ViewAccountActivity extends AppCompatActivity {
                     ArrayList<ChartMov> arrayChartMov = new ArrayList<>();
                     int qty;
                     String type;
+                    String date;
                     boolean check;
                     //for every mov retrieve quantity and type
                     for (Movement mov : arrayMov) {
                         qty = mov.getQty();
                         type = mov.getType();
+                        date = mov.getDate();
                         check=false;
-                        if(qty<0){
-                            //check if type is already in the chart
-                            for (ChartMov cm : arrayChartMov) {
-                                if (cm.getType().equalsIgnoreCase(type)) {
-                                    cm.setQty(cm.getQty() + qty);
-                                    check=true;
-                                    break;
+                        try {
+                            if(qty<0 && dateFilter(date)){
+                                //check if type is already in the chart
+                                for (ChartMov cm : arrayChartMov) {
+                                    if (cm.getType().equalsIgnoreCase(type)) {
+                                        cm.setQty(cm.getQty() + qty);
+                                        check=true;
+                                        break;
+                                    }
+                                }
+                                //if it's not
+                                if(!check) {
+                                    ChartMov c = new ChartMov(type,qty *= -1);
+                                    arrayChartMov.add(c);
                                 }
                             }
-                            //if it's not
-                            if(!check) {
-                                ChartMov c = new ChartMov(type,qty *= -1);
-                                arrayChartMov.add(c);
-                            }
+                        } catch (ParseException e) {
+                            throw new RuntimeException(e);
                         }
                     }
                     //add the chartMov to the chart
@@ -205,6 +224,18 @@ public class ViewAccountActivity extends AppCompatActivity {
                 //call callback
                 Log.d("PieArray", "size:" +pieArray.size());
                 callback.onPiechart(pieArray);
+            }
+
+            private boolean dateFilter(String date) throws ParseException {
+                //get today and format it
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                Date now = Date.from(ZonedDateTime.now().toInstant());
+                Date filterDate = sdf.parse(String.valueOf(date));
+                Date last = Date.from(ZonedDateTime.now().minusMonths(1).toInstant());
+
+                //compare if it's within last month
+                return (filterDate.equals(last) || filterDate.equals(now)) ||
+                        (filterDate.after(last) && filterDate.before(now));
             }
 
             //if fails (it shouldn't)

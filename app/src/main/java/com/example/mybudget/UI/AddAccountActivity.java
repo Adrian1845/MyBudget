@@ -22,8 +22,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class AddAccountActivity extends AppCompatActivity {
-    private FirebaseDatabase db;
-    private FirebaseUser currentFirebaseUser;
     private DatabaseReference userRef;
     private EditText edt_iban;
     private EditText edt_balance;
@@ -42,9 +40,9 @@ public class AddAccountActivity extends AppCompatActivity {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         }
-        currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         //get db
-        db = FirebaseDatabase.getInstance();
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
         //get user's entry
         assert currentFirebaseUser != null;
         //get user's id as main node

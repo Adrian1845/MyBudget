@@ -35,4 +35,11 @@
     <string name="filter">Filter</string>
     <string name="income">Income</string>
     <string name="withdraw">Withdraw</string>
+    <string name="higher">Higher</string>
+    <string name="lower">Lower</string>
+    <string name="food">Food</string>
+    <string name="reset_filters">Reset filters</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+    <string name="reset_dates">Reset dates</string>
 </resources>
