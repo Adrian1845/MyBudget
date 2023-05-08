@@ -6,5 +6,5 @@
     <color name="primary_variant">#EA7D7D</color>
     <color name="secondary_variant">#A39A9A</color>
     <color name="on_secondary">#FF000000</color>
-    <color name="background">#000000</color>
+    <color name="background">#4C4848</color>
 </resources>
