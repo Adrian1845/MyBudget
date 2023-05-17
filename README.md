@@ -7,7 +7,7 @@ MyBudget is an app meant to be used for tracking our spendings with ease, implem
 
 # Tutorial
 First of all you should register to enter the app, introduce your data into "Email" and "Password" fields and then click "Sign up".
-The app itself creates a new account for you but if you click on "New account" you can either generate a new random account (if you don't really care about having a non accurate one) or introduce IBAN and balance (by default it'll be 0).
+The app itself creates a new account for you but if you click on "New account" you can either generate a new random account (if you don't really care about having a non-accurate one) or introduce IBAN and balance (by default it'll be 0).
 
 Now you can select which account you want to visualize or delete, once you have selected the account, click "View account" to see your account current status.
 From here you can see your balance at top, a Pie Chart with your last 30 days movements (if there's none, it'll be empty), and the options for movements.
@@ -16,7 +16,7 @@ If you want to create a new movement, click on "New movement", introduce quantit
 
 Therefore we can go back and watch the Pie Chart (shouldn't be empty now). If you want more information about your movements, click "View movements".
 
-Here you can see a list of your movements and filters option. For filters to work just select which filter you want to apply (top bar) then fulfill the fields with the required data, once you have selected the filter click "Apply filters". To retrieve the list of your movements without any filter (see all of them like at the beginning), click "Reset filters".
+Here you can see a list of your movements and filters option. For filters to work just select which filter you want to apply (top bar) then fulfil the fields with the required data, once you have selected the filter click "Apply filters". To retrieve the list of your movements without any filter (see all of them like at the beginning), click "Reset filters".
 
 /-------------------/
 
